@@ -1,7 +1,7 @@
 # ASMRpocket
 
 <div align="center">
-  <img src="https://www.vhv.rs/dpng/d/513-5133351_rose-gold-darksteel-black-bluetooth-version-of-the.png" alt="ASMRpocket Logo" width="200" height="200">
+  <img src="https://thumbs.dreamstime.com/z/set-hand-drawn-asmr-concept-earphones-head-shape-sound-waves-brushes-doodle-vector-illustration-180950503.jpg" alt="ASMRpocket Logo" width="200" height="200">
 </div>
 
 ASMRpocket is an Android app that allows users to explore a collection of ASMR (Autonomous Sensory Meridian Response) sounds to aid in relaxation, sleep, or passing the time. The app is built using React Native and utilizes a MongoDB Atlas database for the backend, powered by Node.js and Express. The goal of the project is to provide a user-friendly interface where users can easily discover and play a variety of ASMR sounds.
