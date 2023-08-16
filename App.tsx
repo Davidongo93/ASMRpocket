@@ -1,20 +1,25 @@
+import React from 'react';
+import Main from './src/components/Main';
+import { NativeRouter } from 'react-router-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Devonshire: require('./assets/fonts/Devonshire-Regular.ttf'), // Reemplaza con la ruta correcta al archivo de la fuente
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>ASMRpocket</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar style='light' />
+      <NativeRouter>
+        <Main />
+      </NativeRouter>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
