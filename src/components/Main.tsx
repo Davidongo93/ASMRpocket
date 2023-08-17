@@ -4,7 +4,6 @@ import TrackList from './TrackList';
 import AppBar from './AppBar';
 import AppHeader from './AppHeader';
 import { Route, Routes } from 'react-router-native';
-import Login from '../pages/Login';
 
 const styles = StyleSheet.create({
   container: {

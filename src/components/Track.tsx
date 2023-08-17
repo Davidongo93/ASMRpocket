@@ -1,51 +1,63 @@
-// import React from 'react';
-// import { Image, View, StyleSheet } from 'react-native';
-// // import RepositoryStats from './RepositoryStats';
-// import StyledText from './StyledText';
-// import theme from '../theme';
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Audio } from 'expo-av';
+import StyledText from './StyledText';
 
-// const RepositoryItemHeader = ({ ownerAvatarUrl, fullName, description, language }) => (
-//   <View style={{ flexDirection: 'row', paddingBottom: 2 }}>
-//     <View style={{ paddingRight: 10 }}>
-//       <Image style={styles.image} source={{ uri: ownerAvatarUrl }} />
-//     </View>
-//     <View style={{ flex: 1 }}>
-//       <StyledText fontWeight={'bold'} fontSize={'subheading'}>
-//         {fullName}
-//       </StyledText>
-//       <StyledText color={'secondary'}>{description}</StyledText>
-//       <StyledText style={styles.language}>{language}</StyledText>
-//     </View>
-//   </View>
-// );
+interface TrackProps {
+  title: string;
+  audioUrl: string;
+}
 
-// const Track = (props) => (
-//   <View key={props.id} style={styles.container}>
-//     <RepositoryItemHeader {...props} />
-//     {/* <RepositoryStats {...props} /> */}
-//   </View>
-// );
+const Track: React.FC<TrackProps> = ({ title, audioUrl }) => {
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 20,
-//     paddingBottom: 5,
-//     paddingTop: 5,
-//   },
-//   language: {
-//     padding: 4,
-//     color: theme.colors.white,
-//     backgroundColor: theme.colors.primary,
-//     alignSelf: 'flex-start',
-//     marginVertical: 4,
-//     borderRadius: 4,
-//     overflow: 'hidden',
-//   },
-//   image: {
-//     width: 50,
-//     height: 50,
-//     borderRadius: 4,
-//   },
-// });
+  const playSound = async () => {
+    if (!sound) {
+      return; // No se puede reproducir si el sonido no se ha cargado
+    }
 
-// export default Track;
+    if (sound.getStatusAsync) {
+      const status = await sound.getStatusAsync();
+      if (status.isLoaded) {
+        await sound.stopAsync();
+      }
+    }
+
+    try {
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Error playing audio', error);
+    }
+  };
+
+  const loadSound = async () => {
+    const newSound = new Audio.Sound();
+    try {
+      await newSound.loadAsync({ uri: audioUrl });
+      setSound(newSound);
+    } catch (error) {
+      console.error('Error loading audio', error);
+    }
+  };
+
+  return (
+    <TouchableOpacity onPress={playSound} onLongPress={loadSound}>
+      <View style={styles.trackContainer}>
+        <StyledText>{title}</StyledText>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  trackContainer: {
+    padding: 10,
+    backgroundColor: '#EFEFEF',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'gray',
+  },
+});
+
+export default Track;
