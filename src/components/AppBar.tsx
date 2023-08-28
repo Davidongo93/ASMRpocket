@@ -19,7 +19,7 @@ const AppBarTab = ({ children, to }: { children: React.ReactNode; to: string }) 
     <TouchableWithoutFeedback onPress={handlePress}>
       <View style={containerStyles}>
         <StyledText
-          fontWeight='bold'
+          fontWeights='bold'
           style={styles.text}
           align='center'
           color='primary'
@@ -52,7 +52,7 @@ const AppBar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.appBar.primary,
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 20,
