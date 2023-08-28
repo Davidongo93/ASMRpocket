@@ -3,6 +3,8 @@ import Main from './src/components/Main';
 import { NativeRouter } from 'react-router-native';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 import AppLoading from 'expo-app-loading';
 
 export default function App() {
@@ -16,10 +18,12 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style='light' />
-      <NativeRouter>
-        <Main />
-      </NativeRouter>
+      <Provider store={store}>
+        <StatusBar style='light' />
+        <NativeRouter>
+          <Main />
+        </NativeRouter>
+      </Provider>
     </>
   );
 }

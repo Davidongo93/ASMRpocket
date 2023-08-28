@@ -7,7 +7,7 @@ interface StyledTextProps {
   children: ReactNode;
   color?: 'primary' | 'secondary';
   fontSize?: 'subheading';
-  fontWeight?: 'bold' | 'normal' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+  fontWeights?: 'bold' | 'normal' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
   style?: object; // Cambia esto al tipo correcto si StyledText acepta un tipo específico para style
 }
 
@@ -16,7 +16,7 @@ const StyledText = ({
   children,
   color,
   fontSize,
-  fontWeight,
+  fontWeights,
   style,
   ...resOfProps
 }: StyledTextProps) => {
@@ -26,7 +26,7 @@ const StyledText = ({
     color === 'primary' && styles.colorPrimary,
     color === 'secondary' && styles.colorSecondary,
     fontSize === 'subheading' && styles.subheading,
-    fontWeight === 'bold' && styles.bold,
+    fontWeights === 'bold' && styles.bold,
     style,
   ];
   return <Text style={textStyles}>{children}</Text>;
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: theme.fontSizes.body,
     fontFamily: theme.fonts.main,
-    fontWeight: theme.fontWeights.normal,
+    fontWeights: theme.fontWeights.normal,
   },
   colorPrimary: {
     color: theme.colors.primary,

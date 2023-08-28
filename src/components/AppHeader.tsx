@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Text, StatusBar } from 'react-native';
-import StyledText from './StyledText';
 import theme from '../theme';
 import { Link, useLocation } from 'react-router-native';
 
@@ -15,7 +14,7 @@ const AppHeader = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.appBar.primary,
+    // backgroundColor: theme.appBar.primary,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
