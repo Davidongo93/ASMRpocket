@@ -1,14 +1,14 @@
 import React, { ReactNode } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, TextStyle } from 'react-native';
 import theme from '../theme';
 
 interface StyledTextProps {
-  align?: 'center';
+  align: 'center';
   children: ReactNode;
-  color?: 'primary' | 'secondary';
-  fontSize?: 'subheading';
-  fontWeights?: 'bold' | 'normal' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-  style?: object; // Cambia esto al tipo correcto si StyledText acepta un tipo específico para style
+  color: 'primary' | 'secondary';
+  fontSize: 'subheading';
+  fontWeight: TextStyle['fontWeight'];
+  style: TextStyle; // Cambia esto al tipo correcto si StyledText acepta un tipo específico para style
 }
 
 const StyledText = ({
@@ -16,7 +16,7 @@ const StyledText = ({
   children,
   color,
   fontSize,
-  fontWeights,
+  fontWeight,
   style,
   ...resOfProps
 }: StyledTextProps) => {
@@ -26,7 +26,7 @@ const StyledText = ({
     color === 'primary' && styles.colorPrimary,
     color === 'secondary' && styles.colorSecondary,
     fontSize === 'subheading' && styles.subheading,
-    fontWeights === 'bold' && styles.bold,
+    fontWeight === 'bold' && styles.bold,
     style,
   ];
   return <Text style={textStyles}>{children}</Text>;
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: theme.fontSizes.body,
     fontFamily: theme.fonts.main,
-    fontWeights: theme.fontWeights.normal,
+    // fontWeight: theme.fontWeight.normal,
   },
   colorPrimary: {
     color: theme.colors.primary,

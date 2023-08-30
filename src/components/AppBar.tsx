@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
 import StyledText from './StyledText';
 import theme from '../theme';
 import { Link, useLocation, useNavigate } from 'react-router-native';
@@ -19,7 +19,7 @@ const AppBarTab = ({ children, to }: { children: React.ReactNode; to: string }) 
     <TouchableWithoutFeedback onPress={handlePress}>
       <View style={containerStyles}>
         <StyledText
-          fontWeights='bold'
+          fontWeight='bold'
           style={styles.text}
           align='center'
           color='primary'

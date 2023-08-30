@@ -13,16 +13,14 @@ const Track: React.FC<TrackProps> = ({ title, audioUrl }) => {
 
   const playSound = async () => {
     if (!sound) {
-      return; // No se puede reproducir si el sonido no se ha cargado
+      return;
     }
-
     if (sound.getStatusAsync) {
       const status = await sound.getStatusAsync();
       if (status.isLoaded) {
         await sound.stopAsync();
       }
     }
-
     try {
       await sound.playAsync();
     } catch (error) {

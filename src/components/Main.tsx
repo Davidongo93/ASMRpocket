@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import HomeScreen from '../pages/HomeScreen';
+import SearchScreen from '../pages/SearchScreen';
+import LikedSongsScreen from '../pages/LikedSongsScreen';
 import AppBar from './AppBar';
 import AppHeader from './AppHeader';
 import { Route, Routes } from 'react-router-native';
@@ -21,7 +23,8 @@ const Main = () => {
         <AppHeader />
         <Routes>
           <Route path='/' element={<HomeScreen />} />
-          {/* <Route path='/signin' element={<Login />} /> */}
+          <Route path='/search' element={<SearchScreen />} />
+          <Route path='/profile' element={<LikedSongsScreen />} />
         </Routes>
         <AppBar />
       </View>
