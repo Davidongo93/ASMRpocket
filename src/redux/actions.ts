@@ -18,11 +18,10 @@ export type ActionTypes = GetTracksAction;
 
 // Acción para obtener las pistas
 export const getTracks = () => {
-  const endpoint = 'http://localhost:3001/sounds/API';
+  const endpoint = 'http://192.168.0.199:3001/sounds/asmr';
   return async (dispatch: Dispatch<ActionTypes>) => {
     try {
       const response = await axios.get(endpoint);
-      console.log(response);
       dispatch({
         type: GET_TRACKS,
         payload: response.data,
