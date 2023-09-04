@@ -1,9 +1,12 @@
 import React from 'react';
-import Main from './src/components/Main';
 import { NativeRouter } from 'react-router-native';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 import AppLoading from 'expo-app-loading';
+import StackNavigator from './src/components/StackNavigator';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,10 +19,10 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style='light' />
-      <NativeRouter>
-        <Main />
-      </NativeRouter>
+      <Provider store={store}>
+        <StatusBar style='light' />
+        <StackNavigator />
+      </Provider>
     </>
   );
 }

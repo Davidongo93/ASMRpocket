@@ -1,17 +1,25 @@
 import { FlatList, View, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux'; // Asegúrate de importar correctamente el tipo Action
+import { getTracks } from '../redux/actions';
+import { State } from '../redux/reducer';
 import Track from './Track';
 
 const TrackList = () => {
-  const tracks = [
-    { title: 'Flowing River', audioUrl: './assets/tracks/flowing-river.mp3' },
-    { title: 'Rain in the Woods', audioUrl: './assets/tracks/rain-in-the-woods.mp3' },
-    { title: 'Water Sounds', audioUrl: './assets/tracks/water-sounds.mp3' },
-  ];
+  const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
+
+  const tracks = useSelector((state: State) => state.allTracks);
+
+  useEffect(() => {
+    dispatch(getTracks());
+  }, [dispatch]);
 
   return (
     <FlatList
       data={tracks}
-      renderItem={({ item }) => <Track title={item.title} audioUrl={item.audioUrl} />}
+      renderItem={({ item }) => <Track title={item.title} audioUrl={item.audio} />}
       keyExtractor={(item) => item.title}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
