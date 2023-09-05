@@ -14,9 +14,11 @@ const Tab = createBottomTabNavigator();
 const BottomTab = () => {
   return (
     <Tab.Navigator
+      initialRouteName='Home'
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          height: 80,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -26,7 +28,7 @@ const BottomTab = () => {
           elevation: 4,
           shadowOffset: {
             width: 0,
-            height: -4,
+            height: 20,
           },
           borderTopWidth: 0,
         },
@@ -41,7 +43,7 @@ const BottomTab = () => {
           tabBarLabelStyle: { color: 'white' },
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons name='search' size={24} color={'red'} />
+              <Ionicons name='search' size={24} color={'rgba(60, 104, 223, 1)'} />
             ) : (
               <Ionicons name='search' size={24} color={'white'} />
             ),
@@ -56,7 +58,7 @@ const BottomTab = () => {
           tabBarLabelStyle: { color: 'white' },
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Entypo name='home' size={24} color={'red'} />
+              <Entypo name='home' size={24} color={'rgba(60, 104, 223, 1)'} />
             ) : (
               <Entypo name='home' size={24} color={'white'} />
             ),
@@ -71,7 +73,7 @@ const BottomTab = () => {
           tabBarLabelStyle: { color: 'white' },
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <FontAwesome name='user' size={24} color={'red'} />
+              <FontAwesome name='user' size={24} color={'rgba(60, 104, 223, 1)'} />
             ) : (
               <FontAwesome name='user' size={24} color={'white'} />
             ),
