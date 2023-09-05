@@ -19,7 +19,9 @@ const TrackList = () => {
   return (
     <FlatList
       data={tracks}
-      renderItem={({ item }) => <Track title={item.title} audioUrl={item.audio} />}
+      renderItem={({ item }) => (
+        <Track title={item.title} audioUrl={item.audio} image={item.image} category={item.category} />
+      )}
       keyExtractor={(item) => item.title}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
@@ -29,11 +31,10 @@ const TrackList = () => {
 const styles = StyleSheet.create({
   trackContainer: {
     padding: 10,
-    backgroundColor: '#EFEFEF',
   },
   separator: {
     height: 1,
-    backgroundColor: 'gray',
+    backgroundColor: 'transparent',
   },
 });
 
