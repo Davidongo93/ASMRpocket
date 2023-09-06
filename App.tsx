@@ -1,12 +1,11 @@
 import React from 'react';
-import { NativeRouter } from 'react-router-native';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { Provider } from 'react-redux';
+import { ModalPortal } from 'react-native-modals';
 import store from './src/redux/store';
 import AppLoading from 'expo-app-loading';
 import StackNavigator from './src/components/StackNavigator';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -22,6 +21,7 @@ export default function App() {
       <Provider store={store}>
         <StatusBar style='light' />
         <StackNavigator />
+        <ModalPortal />
       </Provider>
     </>
   );

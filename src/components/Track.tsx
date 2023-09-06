@@ -50,10 +50,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   category: {
-    color: 'rgba(245, 40, 145, 1)',
+    color: '#FF7EE3',
     textTransform: 'uppercase',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: '800',
   },
 });
 

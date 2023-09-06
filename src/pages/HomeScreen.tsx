@@ -8,6 +8,10 @@ import { State } from '../redux/reducer';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { BottomModal, ModalContent } from 'react-native-modals';
 
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,21 +26,87 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#002955', '#000000']} style={{ flex: 1 }}>
+      <LinearGradient colors={['#282D4E', '#202123']} style={{ flex: 1 }}>
         <AppHeader />
         <TrackList />
       </LinearGradient>
       {currentTrack && (
-        <Pressable style={styles.playerContainer}>
-          <Image source={{ uri: currentTrack.image }} style={styles.image} />
+        <Pressable style={styles.playerContainer} onPress={() => setModalVisible(!modalVisible)}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Image source={{ uri: currentTrack.image }} style={styles.image} />
+            <Text numberOfLines={1} ellipsizeMode='tail' style={styles.title}>
+              {currentTrack.title}
+            </Text>
+          </View>
           <View>
-            <Text style={styles.title}>{currentTrack.title}</Text>
+            <Pressable>
+              <Ionicons name='play-circle-outline' size={32} color='rgba(60, 104, 223, 1)' />
+              {/* <AntDesign name="pausecircle" size={24} color="black" /> */}
+            </Pressable>
           </View>
         </Pressable>
       )}
-      {/* <BottomModal>
-        <ModalContent></ModalContent>
-      </BottomModal> */}
+      <BottomModal
+        visible={modalVisible}
+        onHardwareBackPress={() => setModalVisible(false)}
+        swipeDirection={['up', 'down']}
+        swipeThreshold={200}
+      >
+        <ModalContent style={{ height: '100%', width: '100%', backgroundColor: '#5072A7' }}>
+          <View style={{ height: '100%', width: '100%', marginTop: 40 }}>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <AntDesign onPress={() => setModalVisible(!modalVisible)} name='down' size={24} color='white' />
+              <Text style={styles.modalCategory}>{currentTrack?.category}</Text>
+              <Entypo name='dots-three-vertical' size={24} color='white' />
+            </Pressable>
+            <View style={{ padding: 10 }}>
+              <Image source={{ uri: currentTrack?.image }} style={styles.modalImage} />
+              <View>
+                <Text style={styles.modalTitle}>{currentTrack?.title}</Text>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Text>ProgessBar</Text>
+                <View
+                  style={{
+                    marginTop: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text style={{ color: 'white', fontSize: 15 }}>0:00</Text>
+                  <Text style={{ color: 'white', fontSize: 15 }}>0:20</Text>
+                </View>
+                <View
+                  style={{
+                    marginTop: 17,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 50,
+                  }}
+                >
+                  <Pressable>
+                    <Ionicons name='play-skip-back' size={30} color='white' />
+                  </Pressable>
+                  <Pressable>
+                    <AntDesign name='pausecircle' size={60} color='white' />
+                  </Pressable>
+                  <Pressable>
+                    <Ionicons name='play-skip-forward' size={30} color='white' />
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </View>
+        </ModalContent>
+      </BottomModal>
     </View>
   );
 };
@@ -61,7 +131,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'space-between',
   },
   image: {
     width: 40,
@@ -69,6 +139,27 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
+    fontSize: 12,
+    maxWidth: 250,
+  },
+
+  modalTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  modalCategory: {
+    color: '#FF7EE3',
+    textTransform: 'uppercase',
+    fontWeight: '900',
+    fontSize: 14,
+  },
+  modalImage: {
+    width: '100%',
+    height: 350,
+    borderRadius: 4,
+    marginTop: 90,
   },
 });
 
