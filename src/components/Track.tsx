@@ -14,11 +14,12 @@ interface TrackProps {
 
 const Track: React.FC<TrackProps> = ({ title, audioUrl, image, category }) => {
   const dispatch = useDispatch();
-  const playSound = async () => {
+  const selectSound = async () => {
     dispatch(selectTrack({ title, audio: audioUrl, image, category }));
   };
+
   return (
-    <TouchableOpacity onPress={playSound}>
+    <TouchableOpacity onPress={selectSound}>
       <View style={styles.trackContainer}>
         <Image source={{ uri: image }} style={styles.image} />
         <View style={styles.textContainer}>
@@ -50,10 +51,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   category: {
-    color: 'rgba(245, 40, 145, 1)',
+    color: '#FF7EE3',
     textTransform: 'uppercase',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: '800',
   },
 });
 

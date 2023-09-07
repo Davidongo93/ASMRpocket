@@ -1,7 +1,4 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
-import StyledText from './StyledText';
-import theme from '../theme';
 import { Entypo, Ionicons, FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -23,13 +20,6 @@ const BottomTab = () => {
           bottom: 0,
           left: 0,
           right: 0,
-          shadowOpacity: 4,
-          shadowRadius: 4,
-          elevation: 4,
-          shadowOffset: {
-            width: 0,
-            height: 20,
-          },
           borderTopWidth: 0,
         },
       }}
