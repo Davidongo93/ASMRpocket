@@ -14,11 +14,12 @@ interface TrackProps {
 
 const Track: React.FC<TrackProps> = ({ title, audioUrl, image, category }) => {
   const dispatch = useDispatch();
-  const playSound = async () => {
+  const selectSound = async () => {
     dispatch(selectTrack({ title, audio: audioUrl, image, category }));
   };
+
   return (
-    <TouchableOpacity onPress={playSound}>
+    <TouchableOpacity onPress={selectSound}>
       <View style={styles.trackContainer}>
         <Image source={{ uri: image }} style={styles.image} />
         <View style={styles.textContainer}>
