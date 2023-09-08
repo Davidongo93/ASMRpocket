@@ -4,9 +4,9 @@ import TrackList from '../components/TrackList';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppHeader from '../components/AppHeader';
 import { Action } from 'redux'; // Asegúrate de importar correctamente el tipo Action
-import { getTracks } from '../redux/actions';
+import { getTracks, selectTrack } from '../redux/actions';
 import { State } from '../redux/reducer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Entypo } from '@expo/vector-icons';
@@ -22,6 +22,7 @@ const HomeScreen = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const value = useRef(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
@@ -32,12 +33,16 @@ const HomeScreen = () => {
     dispatch(getTracks());
   }, [dispatch]);
 
+  const selectSound = async (title, audioUrl, image, category) => {
+    dispatch(selectTrack({ title, audioUrl, image, category }));
+  };
+
   const playTrack = async () => {
     try {
       const audioURL = currentTrack?.audio;
       await Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
+        staysActiveInBackground: true,
         shouldDuckAndroid: false,
       });
       const { sound, status } = await Audio.Sound.createAsync(
@@ -83,6 +88,22 @@ const HomeScreen = () => {
         await currentSound.playAsync();
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+
+  const playNextTrack = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      setCurrentSound(null);
+    }
+
+    value.current += 1;
+    if (value.current < tracks.length) {
+      const nextTrack = tracks[value.current];
+      dispatch(selectTrack(nextTrack));
+      await playTrack(nextTrack);
+    } else {
+      console.log('end of playlist');
     }
   };
 
