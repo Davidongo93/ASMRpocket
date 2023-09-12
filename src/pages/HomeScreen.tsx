@@ -23,6 +23,8 @@ const HomeScreen = () => {
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const value = useRef(0);
+  // THE GREEN COMMIT
+  const value2 = useRef(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
