@@ -24,7 +24,7 @@ const HomeScreen = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const value = useRef(0);
   // THE GREEN COMMIT
-  const value3 = useRef(0);
+  const davegono = useRef(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
