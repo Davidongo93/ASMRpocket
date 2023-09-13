@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, PanResponder } from 'react-native';
 import TrackList from '../components/TrackList';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppHeader from '../components/AppHeader';
 import { Action } from 'redux'; // Asegúrate de importar correctamente el tipo Action
 import { getTracks, selectTrack } from '../redux/actions';
 import { State } from '../redux/reducer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Entypo } from '@expo/vector-icons';
@@ -23,6 +23,10 @@ const HomeScreen = () => {
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const progressBarWidthRef = useRef<number>(0);
+  const progressBarXRef = useRef<number>(0);
+  const progressBarXRefff2 = useRef<number>(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
@@ -142,6 +146,27 @@ const HomeScreen = () => {
     }
   };
 
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => {
+      setDragging(true);
+    },
+    onPanResponderMove: (e) => {
+      if (dragging && currentSound) {
+        const progressBarWidth = progressBarWidthRef.current; // Haz referencia a la anchura de la progressBar
+        const touchX = e.nativeEvent.pageX - progressBarXRef.current; // Calcula la posición del toque relativa a la progressBar
+        const newProgress = touchX / progressBarWidth;
+        const newTime = newProgress * totalDuration;
+        currentSound.setPositionAsync(newTime);
+        setCurrentTime(newTime);
+      }
+    },
+    onPanResponderRelease: () => {
+      setDragging(false);
+    },
+  });
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#282D4E', '#202123']} style={{ flex: 1 }}>
@@ -217,6 +242,18 @@ const HomeScreen = () => {
                     height: 3,
                     backgroundColor: 'gray',
                     borderRadius: 5,
+                  }}
+                  onTouchStart={() => setDragging(true)}
+                  onTouchEnd={() => setDragging(false)}
+                  onTouchMove={(e) => {
+                    if (dragging && currentSound) {
+                      const progressBarWidth = e.nativeEvent.layout.width;
+                      const touchX = e.nativeEvent.locationX;
+                      const newProgress = touchX / progressBarWidth;
+                      const newTime = newProgress * totalDuration;
+                      currentSound.setPositionAsync(newTime);
+                      setCurrentTime(newTime);
+                    }
                   }}
                 >
                   <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
