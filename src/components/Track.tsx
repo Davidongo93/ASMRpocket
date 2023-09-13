@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
-import { Audio } from 'expo-av';
 import { useDispatch } from 'react-redux';
 import { selectTrack } from '../redux/actions';
 import StyledText from './StyledText';

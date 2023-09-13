@@ -6,7 +6,7 @@ import AppHeader from '../components/AppHeader';
 import { Action } from 'redux'; // Asegúrate de importar correctamente el tipo Action
 import { getTracks, selectTrack } from '../redux/actions';
 import { State } from '../redux/reducer';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Entypo } from '@expo/vector-icons';
@@ -22,9 +22,7 @@ const HomeScreen = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const value = useRef(0);
-  // THE GREEN COMMIT
-  const value3 = useRef(0);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
@@ -35,31 +33,51 @@ const HomeScreen = () => {
     dispatch(getTracks());
   }, [dispatch]);
 
-  const selectSound = async (title, audioUrl, image, category) => {
-    dispatch(selectTrack({ title, audioUrl, image, category }));
-  };
+  useEffect(() => {
+    const trackIndex = tracks.findIndex((track) => track.title === currentTrack?.title);
+    setCurrentTrackIndex(trackIndex);
+  }, [currentTrack, tracks]);
 
-  const playTrack = async () => {
+  useEffect(() => {
+    if (currentTrackIndex !== null) {
+      playTrack(currentTrackIndex);
+    }
+  }, [currentTrackIndex]);
+
+  const playTrack = async (currentTrackIndex: number) => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      setCurrentSound(null);
+    }
     try {
-      const audioURL = currentTrack?.audio;
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: true,
-        shouldDuckAndroid: false,
-      });
-      const { sound, status } = await Audio.Sound.createAsync(
-        {
-          uri: audioURL || '',
-        },
-        {
-          shouldPlay: true,
-          isLooping: false,
-        },
-        onPlaybackStatusUpdate
-      );
-      onPlaybackStatusUpdate(status);
-      setCurrentSound(sound);
-      setIsPlaying(status.isLoaded);
+      if (currentTrackIndex >= 0 && currentTrackIndex < tracks.length) {
+        const currentTrack = tracks[currentTrackIndex];
+        const audioURL = currentTrack?.audio;
+
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: true,
+          shouldDuckAndroid: false,
+        });
+
+        const { sound, status } = await Audio.Sound.createAsync(
+          {
+            uri: audioURL || '',
+          },
+          {
+            shouldPlay: true,
+            isLooping: false,
+          },
+          onPlaybackStatusUpdate
+        );
+
+        onPlaybackStatusUpdate(status);
+        setCurrentSound(sound);
+        setIsPlaying(status.isLoaded);
+        console.log(currentTrackIndex);
+      } else {
+        console.log('Invalid track index');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -72,6 +90,10 @@ const HomeScreen = () => {
       setCurrentTime(status.positionMillis);
       setTotalDuration(status.durationMillis);
     }
+    if (status.didJustFinished === true) {
+      setCurrentSound(null);
+      await playNextTrack();
+    }
   };
 
   const formatTime = (time: number) => {
@@ -81,8 +103,6 @@ const HomeScreen = () => {
   };
 
   const handlePlayPause = async () => {
-    console.log(currentSound);
-
     if (currentSound) {
       if (isPlaying) {
         await currentSound.pauseAsync();
@@ -99,13 +119,26 @@ const HomeScreen = () => {
       setCurrentSound(null);
     }
 
-    value.current += 1;
-    if (value.current < tracks.length) {
-      const nextTrack = tracks[value.current];
+    if (currentTrackIndex !== null && currentTrackIndex + 1 < tracks.length) {
+      const nextTrackIndex = currentTrackIndex + 1;
+      const nextTrack = tracks[nextTrackIndex];
       dispatch(selectTrack(nextTrack));
-      await playTrack(nextTrack);
     } else {
-      console.log('end of playlist');
+      console.log('End of playlist');
+    }
+  };
+
+  const playPreviousTrack = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      setCurrentSound(null);
+    }
+    if (currentTrackIndex !== null && currentTrackIndex - 1 >= 0 && currentTrackIndex - 1 < tracks.length) {
+      const nextTrackIndex = currentTrackIndex - 1;
+      const nextTrack = tracks[nextTrackIndex];
+      dispatch(selectTrack(nextTrack));
+    } else {
+      console.log('Beginning of playlist');
     }
   };
 
@@ -124,9 +157,30 @@ const HomeScreen = () => {
             </Text>
           </View>
           <View>
-            <Pressable>
-              <Ionicons name='play-circle-outline' size={32} color='rgba(60, 104, 223, 1)' />
-              {/* <AntDesign name="pausecircle" size={24} color="black" /> */}
+            <Pressable onPress={handlePlayPause}>
+              {isPlaying ? (
+                <AntDesign name='pausecircle' size={32} color='white' style={{ marginLeft: 10 }} />
+              ) : (
+                <Pressable
+                  onPress={() => {
+                    if (currentTrackIndex !== null) {
+                      playTrack(currentTrackIndex);
+                    } else {
+                      console.log('No track selected');
+                    }
+                  }}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    backgroundColor: 'transparent',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Ionicons name='play-circle-outline' size={32} color='white' />
+                </Pressable>
+              )}
             </Pressable>
           </View>
         </Pressable>
@@ -203,7 +257,7 @@ const HomeScreen = () => {
                     paddingHorizontal: 50,
                   }}
                 >
-                  <Pressable>
+                  <Pressable onPress={playPreviousTrack}>
                     <Ionicons name='play-skip-back' size={30} color='white' />
                   </Pressable>
                   <Pressable onPress={handlePlayPause}>
@@ -211,7 +265,13 @@ const HomeScreen = () => {
                       <AntDesign name='pausecircle' size={60} color='white' />
                     ) : (
                       <Pressable
-                        onPress={playTrack}
+                        onPress={() => {
+                          if (currentTrackIndex !== null) {
+                            playTrack(currentTrackIndex);
+                          } else {
+                            console.log('No track selected');
+                          }
+                        }}
                         style={{
                           width: 60,
                           height: 60,
@@ -225,7 +285,7 @@ const HomeScreen = () => {
                       </Pressable>
                     )}
                   </Pressable>
-                  <Pressable>
+                  <Pressable onPress={playNextTrack}>
                     <Ionicons name='play-skip-forward' size={30} color='white' />
                   </Pressable>
                 </View>
