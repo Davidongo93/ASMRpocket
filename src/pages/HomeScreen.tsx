@@ -26,7 +26,7 @@ const HomeScreen = () => {
   const [dragging, setDragging] = useState(false);
   const progressBarWidthRef = useRef<number>(0);
   const progressBarXRef = useRef<number>(0);
-  const progressBarXRefff2 = useRef<number>(0);
+  const progressBarXRefff54 = useRef<number>(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
@@ -146,26 +146,33 @@ const HomeScreen = () => {
     }
   };
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      setDragging(true);
-    },
-    onPanResponderMove: (e) => {
-      if (dragging && currentSound) {
-        const progressBarWidth = progressBarWidthRef.current; // Haz referencia a la anchura de la progressBar
-        const touchX = e.nativeEvent.pageX - progressBarXRef.current; // Calcula la posición del toque relativa a la progressBar
-        const newProgress = touchX / progressBarWidth;
-        const newTime = newProgress * totalDuration;
+  const onTouchStartProgressBar = () => {
+    setDragging(true);
+  };
+
+  const onTouchEndProgressBar = () => {
+    setDragging(false);
+  };
+
+  const onLayoutProgressBar = (e) => {
+    // Almacena la anchura de la progressBar cuando cambia el diseño
+    progressBarWidthRef.current = e.nativeEvent.layout.width;
+  };
+
+  const onTouchMoveProgressBar = (e) => {
+    if (dragging && currentSound) {
+      const progressBarWidth = progressBarWidthRef.current; // Obtén la anchura almacenada
+      const touchX = e.nativeEvent.locationX;
+      const newProgress = touchX / progressBarWidth;
+      const newTime = newProgress * totalDuration;
+
+      // Asegúrate de que newTime sea un número válido y esté dentro de los límites
+      if (!isNaN(newTime) && newTime >= 0 && newTime <= totalDuration) {
         currentSound.setPositionAsync(newTime);
         setCurrentTime(newTime);
       }
-    },
-    onPanResponderRelease: () => {
-      setDragging(false);
-    },
-  });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -243,18 +250,10 @@ const HomeScreen = () => {
                     backgroundColor: 'gray',
                     borderRadius: 5,
                   }}
-                  onTouchStart={() => setDragging(true)}
-                  onTouchEnd={() => setDragging(false)}
-                  onTouchMove={(e) => {
-                    if (dragging && currentSound) {
-                      const progressBarWidth = e.nativeEvent.layout.width;
-                      const touchX = e.nativeEvent.locationX;
-                      const newProgress = touchX / progressBarWidth;
-                      const newTime = newProgress * totalDuration;
-                      currentSound.setPositionAsync(newTime);
-                      setCurrentTime(newTime);
-                    }
-                  }}
+                  onTouchStart={onTouchStartProgressBar}
+                  onTouchEnd={onTouchEndProgressBar}
+                  onLayout={onLayoutProgressBar}
+                  onTouchMove={onTouchMoveProgressBar}
                 >
                   <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
                   <View
