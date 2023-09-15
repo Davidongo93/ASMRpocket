@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, PanResponder } from 'react-native';
 import TrackList from '../components/TrackList';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppHeader from '../components/AppHeader';
 import { Action } from 'redux'; // Asegúrate de importar correctamente el tipo Action
 import { getTracks, selectTrack } from '../redux/actions';
 import { State } from '../redux/reducer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Entypo } from '@expo/vector-icons';
@@ -23,6 +23,10 @@ const HomeScreen = () => {
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const progressBarWidthRef = useRef<number>(0);
+  const progressBarXRef = useRef<number>(0);
+  const progressBarXRefff54 = useRef<number>(0);
 
   const dispatch = useDispatch<ThunkDispatch<State, null, Action>>();
 
@@ -142,6 +146,34 @@ const HomeScreen = () => {
     }
   };
 
+  const onTouchStartProgressBar = () => {
+    setDragging(true);
+  };
+
+  const onTouchEndProgressBar = () => {
+    setDragging(false);
+  };
+
+  const onLayoutProgressBar = (e) => {
+    // Almacena la anchura de la progressBar cuando cambia el diseño
+    progressBarWidthRef.current = e.nativeEvent.layout.width;
+  };
+
+  const onTouchMoveProgressBar = (e) => {
+    if (dragging && currentSound) {
+      const progressBarWidth = progressBarWidthRef.current; // Obtén la anchura almacenada
+      const touchX = e.nativeEvent.locationX;
+      const newProgress = touchX / progressBarWidth;
+      const newTime = newProgress * totalDuration;
+
+      // Asegúrate de que newTime sea un número válido y esté dentro de los límites
+      if (!isNaN(newTime) && newTime >= 0 && newTime <= totalDuration) {
+        currentSound.setPositionAsync(newTime);
+        setCurrentTime(newTime);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#282D4E', '#202123']} style={{ flex: 1 }}>
@@ -218,6 +250,10 @@ const HomeScreen = () => {
                     backgroundColor: 'gray',
                     borderRadius: 5,
                   }}
+                  onTouchStart={onTouchStartProgressBar}
+                  onTouchEnd={onTouchEndProgressBar}
+                  onLayout={onLayoutProgressBar}
+                  onTouchMove={onTouchMoveProgressBar}
                 >
                   <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
                   <View
